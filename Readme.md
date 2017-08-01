@@ -64,7 +64,7 @@ public interface TestInterface {
                         create(TestInterface.class)
                         .test("Implement By Module B");
   
-   //使用方只依赖了ModuleStub，ProtocolInterpreter会自动调用合适的类。
+   //使用方只依赖了TestInterface，ProtocolProxy会自动调用合适的类。
                                 
  ```
 ### 实现原理
