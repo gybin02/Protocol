@@ -7,6 +7,7 @@
 
 ### 方案对比
  * 定义请求接口，类似于请求服务器的工作方式； 服务端于前端约定好数据格式，双方进行通信
+ * 使用[Jet](https://github.com/gybin02/Jet) 工程里面的@JImplement 和 @JProvider方法；缺点是：需要指定的实现的类全路径。
  * 定义interface，模块间调用使用接口； (本组件使用方式)
 ### 使用：
 #### 比如模块A定义接口，提供对外能力：
@@ -75,6 +76,12 @@ public interface TestInterface {
 ### 问题：
 
 ### 参考
+- [微信Android模块化架构重构实践](https://mp.weixin.qq.com/s/mkhCzeoLdev5TyO6DqHEdw)
+- [Android程序设计探索：MVP与模块化](http://www.jianshu.com/p/fb057953131e)
+- [Android模块化实践](http://www.jianshu.com/p/e812595b5873)
+- [组件化、模块化、集中式、分布式、服务化、面向服务的架构、微服务架构
+](http://www.hollischuang.com/archives/1628)
+- [Android组件化和插件化开发](http://dahei.me/2016/06/30/Android%E7%BB%84%E4%BB%B6%E5%8C%96%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8C%96%E5%BC%80%E5%8F%91/)
 
 ### TODO
 - 之前可以通过implements interface 比较方便地获得子类方法的签名，现在没有IDE智能提示，写实际的实现类方法的时候，有点不方便。（fixed）
