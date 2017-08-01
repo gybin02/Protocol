@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile project(':jet_annotation')
+    compile 'com.squareup:javapoet:1.8.0'
+    compile 'com.google.auto.service:auto-service:1.0-rc2'
+    compile 'com.google.code.gson:gson:2.2.4'
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+apply from:rootProject.file("mvn_java.gradle")
