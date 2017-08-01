@@ -1,166 +1,89 @@
-# Jet RouterKit
-美柚路由库；Android平台对页面、服务的路由框架。自动化且易用。
+# Jet Protocol 模块间协议框架
 
-- 基于**APT**技术（注解-编译时生成代码，不反射，无性能损耗），通过注解方式来实现**URL**打开Activity功能。
-- 并支持在WebView和外部浏览器使用，支持多级Activity跳转，
-- 使用[**Jet**](http://git.meiyou.im/Android/jet)技术支持Bundle、Intent，Uri参数自动注入页面并转换参数类型。
+业务模块间通常通过定义/实现java的interface完成业务逻辑，必然导致模块间存在代码层面的依赖。也导致编译期的工程依赖。事实上，业务模块间仅仅是逻辑上存在依赖，完全没必要产生实际的工程依赖。
+
+该组件提供了一种解藕模块间显式依赖的能力。
 
 
 ### 方案对比
-|实现功能|**RouterKit**|Airbnb 的**DeepLinkDispatch**|阿里     **ARouter**|天猫 统跳协议|**ActivityRouter**Github上Star最多 |
-|:------:|:--------:| :----------------------:| :-------------:| :----------:|-------------:|
-|路由注册	|注解式APT自动注册	|每个module都要手动注册	|每个module的路由表都要APT类查找	|AndroidManiFest配置	|每个module都要手动注册|
-|路由查找	|路由表|	路由表	|路由表	|系统Intent|	路由表
-|路由分发	|Activity转发|	Activity转发|	Activity转发|	Activity转发	|Activity转发|
-|动态替换	|主线程|	不支持	|线程等待	|不支持|	不支持|
-|动态拦截	|主线程|	不支持|	线程等待	|不支持	|主线程|
-|安全拦截	|主线程|	不支持	|线程等待	|不支持	|主线程|
-|方法调用	|手动拼装	|手动拼装	|手动拼装	|手动拼装	|手动拼装|
-|参数获取	|JET 依赖自动注入，支持所有类型|	参数定义在path，不利于多人协作|	Apt依赖注入，但是要手动调用get方法|	手动调用	|手动调用|
-|结果返回	|onActivityResult|	onActivityResult	|onActivityResult	|onActivityResult	|onActivityResult|
-|支持多Module	|支持	|不支持	|支持	|不支持|	支持|
-
-
-整体类似 阿里开源的[**ARoute**](https://github.com/alibaba/ARouter) 功能；移除分组概念，强化多Module编译和自动注册路由表，会更通用。
-
-### 特色：
-1. 支持注解方式，APT编译器自动注册Activity 和**Action**（类似Struts里面的Action）
-2. 支持自动注入Intent,Bundle、Uri里的参数到页面使用[**Jet**](http://git.meiyou.im/Android/jet)
-3. 支持外部浏览器打开。
-4. 支持HTTP协议。
-5. 支持多个Module。
-6. 支持Uri 跳转和 Action 执行；
-7. 路由表自动初始化，也可以手动再维护；
-8. 支持服务端下发路由配置，简单支持页面降级功能；
-
-### 功能：
-- Apt实现自动路由注册，支持多Module
-- 路由表维护
-- Activity转发 和 Action转发（支持URI页面跳转和方法调用）
-
-### 原理图
-![原理图](http://upload-images.jianshu.io/upload_images/53953-ce3ffb119e0d6534.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
-
-![URI定义](http://upload-images.jianshu.io/upload_images/53953-054d5e9096445d84.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
-
-### 典型应用
-1. 从外部URL映射到内部页面，以及参数传递与解析
-2. 跨模块页面跳转，模块间解耦
-3. 拦截跳转过程，处理登陆、埋点等逻辑
-4. 跨模块API调用，通过控制反转来做组件解耦
-
-### 使用范例 
-- 声明1: 页面跳转
-
+ * 定义请求接口，类似于请求服务器的工作方式； 服务端于前端约定好数据格式，双方进行通信
+ * 定义interface，模块间调用使用接口； (本组件使用方式)
+### 使用：
+#### 比如模块A定义接口，提供对外能力：
 ```java
-@JUri("/home")
-public class IntentActivity extends AppCompatActivity {
-    // Uri 的参数通过 Intent传递进来, 推荐使用Jet自动读取；
-    .....
-    //
+public interface ModuleStub {
+
+    public void testMethod(String msg, Context context, TextView textView);
 }
 ```
-- or 声明2： 服务功能调用：
-```java
-//支持，多个地址 @JUri(array={"/home","/action"})
-@JUri("/action")
-public class TestAction extends Action {
-    Context context = MyApplication.getContext();
+#### 模块B实现接口：
+public class ModuleBar implements ModuleStub {
 
     @Override
-    public void run(Map queryMap) {
-        super.run(queryMap);
-        //Uri 里面的参数通过Map传递进来
-        String result = (String) queryMap.get("param");
-        Toast.makeText(context, "Test Action: " + result, Toast.LENGTH_SHORT).show();
+    public void testMethod(String msg, Context context,
+                                        TextView textView) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+        this.callAntherModule(context, textView);
     }
 }
-    
-```
-- 方法调用
-
+#### 最终使用方将会：
 ```java
-    // 尽可能早，推荐在Application中初始化,初始化路由表
-    Router.getInstance().init(mApplication);
-
-
-    // 方式一
-    String uri = "meiyou:///home";
-    Router.getInstance().run(uri);
-
-    // 方式二
-    Router.getInstance().run(context, Uri.parse("meiyou:///second?uid=233"));
-    
-    // 方式三
-    // 如果AndroidManifest.xml注册了RouterCenterActivity，也可以通过下面的方式打开，如果是APP内部使用，不建议使用。
-    // startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("meiyou:///home?uid=233")));
+ModuleStub stub＝new ModuleBar();
+//这种方式必然导致模块B依赖模块A。 代码产生了依赖，耦合。
 ```
-
-### 从外部浏览器、其它APP打开
-    
-只要在AndroidManifest.xml注册了RouterCenterActivity，即可变成经典的Uri打开，可以支持外部浏览器、其它APP打开内部的Activity。
-```xml
-<activity android:name="com.meiyou.router.RouterCenterActivity">
-    <intent-filter>
-        <action android:name="android.intent.action.VIEW" />
-        <category android:name="android.intent.category.DEFAULT" />
-        <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="test" />
-    </intent-filter>
-</activity>
-```
+#### 本组件的使用方式：
+模块A：
 ```java
-// Java代码调用
-startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("meiyou:///second?uid=233&name=Wiki")));
+//@Interface 注解里的Value要全局唯一；
+@Interface("protocol_key")
+public interface TestInterface {
 
-// HTML方式，系统浏览器（不支持微信，微信内部开网页会禁止所有的Scheme）
-<a href="test:///second?uid=233&name=Wiki">打开JoyrunApp的SecondActivity</a>
-
+     public void test(String msg);
+}
 ```
-
-### 支持拦截器，典型应用就是：某些URI需要授权才能访问
-
-通过前置拦截器可以对URL进行拦截，可以通过拦截器对URL进行修改，也可以拦截URL，不让路由器打开。
+模块B：
 ```java
-Router.addInterceptor(new UriInterceptor() {
-    public String beforeExecute(InterceptorData data) {
-    	//return url.replace("test://www.XXX.com/","test://");
-        return data;
-    }
-});
-```
-### 支持 设置Scheme ，只有允许的Scheme才有效；才允许路由分发
-```java
-Router.addScheme("meiyou");
-```
+   @Implement("protocol_key")
+   public class TestImplement {
+   
+       public void test(String msg) {
+           Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+   
+       }
+   }
+   //这里实际上实现了TestInterface的接口方法，要求方法与之签名一致。只是没有使用implements关键字。
+ ```
+使用方：
 
-### 集成
-在gradle文件配置：
-```groove
-//内部版本：0.0.1-SNAPSHOT
-compile "com.meiyou.framework:router:0.0.1-SNAPSHOT"
-```
+在工程build.gradle中配置依赖:
+ ```groovy
+   //内部版本：0.0.1-SNAPSHOT
+  compile 'com.meiyou.framework:protocol:0.0.1'
+  ```
+调用的地方：
+```java
+  ProtocolProxy.getInstance().
+                        create(TestInterface.class)
+                        .test("Implement By Module B");
+  
+   //使用方只依赖了ModuleStub，ProtocolInterpreter会自动调用合适的类。
+                                
+ ```
+### 实现原理
+1. 通过编译期注解,实现收集所有的Interface ->  Implement 对应关系文件：relate.json
+2. 使用Java动态代理 ProxyInvoker 调用
 
 ### 混淆
-### 常见问题
-* [Intent参数自动注入IOC - Jet](git.meiyou.im/Android/jet)
-* 参考[Android 组件化 —— 路由设计最佳实践](http://www.jianshu.com/p/8a3eeeaf01e8)
-* [开源最佳实践：Android平台页面路由框架ARouter](https://yq.aliyun.com/articles/71687?spm=5176.100240.searchblog.7.8os9Go)
-* [iOS 组件化 —— 路由设计思路分析](https://halfrost.com/ios_route)
-* [LiteRouter模仿retrofit，各个业务分根据需求约定好接口，就像一份接口文档一样](http://www.jianshu.com/p/79e9a54e85b2)
-* [routable-android 模式匹配方式的路由](https://github.com/clayallsopp/routable-android)
+### 问题：
+
+### 参考
 
 ### TODO
-- JUri 支持数组数据（fixed）
-- Module传递依赖解决 (fixed)
-- 自定义 注解实现，可以再自定义额外的路由表，实现自定义的注解的路由，Door接口的优化
--  Gradle Plugin实现，APT 主工程 需要配置编译过程问题
-- 拦截器排序,优先级 priority
-- 路由匹配规则Matcher功能升级, Pattern 模式匹配
-- 调用方式接口化，like: retrofit;
-- 路由结果回调？ isNeed？
+- 之前可以通过implements interface 比较方便地获得子类方法的签名，现在没有IDE智能提示，写实际的实现类方法的时候，有点不方便。（fixed）
+- 如果出现找不到 Implement 会报 报 空指针， 最好可以处理掉，使用空实现，但是Log 提示
+- 错误提示需要更明显：找不到类啊，方法签名不对等等；
 - Kotlin版本实现
+- 打AAR发布到 JcCenter
 
 ### License
 
