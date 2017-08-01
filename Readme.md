@@ -11,24 +11,22 @@
 ### 使用：
 #### 比如模块A定义接口，提供对外能力：
 ```java
-public interface ModuleStub {
+public interface TestInterface {
 
-    public void testMethod(String msg, Context context, TextView textView);
+     public void test(String msg);
 }
 ```
 #### 模块B实现接口：
-public class ModuleBar implements ModuleStub {
+public class TestImplement implements TestInterface {
 
     @Override
-    public void testMethod(String msg, Context context,
-                                        TextView textView) {
+    public void test(String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-        this.callAntherModule(context, textView);
     }
 }
 #### 最终使用方将会：
 ```java
-ModuleStub stub＝new ModuleBar();
+TestImplement stub＝new TestImplement();
 //这种方式必然导致模块B依赖模块A。 代码产生了依赖，耦合。
 ```
 #### 本组件的使用方式：
