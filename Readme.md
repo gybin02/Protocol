@@ -9,7 +9,9 @@
  * 定义请求接口，类似于请求服务器的工作方式； 服务端于前端约定好数据格式，双方进行通信
  * 使用[Jet](https://github.com/gybin02/Jet) 工程里面的@JImplement 和 @JProvider方法；缺点是：需要指定的实现的类全路径。
  * 定义interface，模块间调用使用接口； (本组件使用方式)
+ 
 ### 使用：
+
 #### 比如模块A定义接口，提供对外能力：
 ```java
 public interface TestInterface {
