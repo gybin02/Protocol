@@ -3,7 +3,7 @@ package com.seeker.tony.myapplication.protocol;
 import com.meiyou.annotation.Interface;
 
 /**
- * @author zhengxiaobin@xiaoyouzi.com
+ * @author zhengxiaobin
  * @since 17/7/27
  */
 @Interface("protocol")

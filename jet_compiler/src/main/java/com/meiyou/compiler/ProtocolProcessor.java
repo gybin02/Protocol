@@ -25,7 +25,7 @@ import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
 /**
- * @author zhengxiaobin@xiaoyouzi.com
+ * @author zhengxiaobin
  * @since 17/7/27
  */
 

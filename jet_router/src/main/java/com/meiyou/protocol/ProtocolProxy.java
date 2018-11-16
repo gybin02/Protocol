@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * 协议调用 入口
  *
- * @author zhengxiaobin@xiaoyouzi.com
+ * @author zhengxiaobin
  * @since 17/7/27
  */
 

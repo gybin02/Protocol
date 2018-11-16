@@ -1,7 +1,7 @@
 package com.com.meiyou.protocol;
 
 /**
- * @author zhengxiaobin@xiaoyouzi.com
+ * @author zhengxiaobin
  * @since 17/7/27
  */
 

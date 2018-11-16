@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 /**
  * 方法代理
  *
- * @author zhengxiaobin@xiaoyouzi.com
+ * @author zhengxiaobin
  * @since 17/7/27 下午2:05
  */
 public class ProxyMethodHandler implements InvocationHandler {
