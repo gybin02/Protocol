@@ -7,8 +7,8 @@ package com.seeker.tony.myapplication.protocol;
 
 import android.util.Log;
 
-import com.meiyou.annotation.Implement;
-import com.meiyou.jet.module_b.protocol.ModuleTestInterface;
+import com.jet.annotation.Implement;
+import com.jet.jet.module_b.protocol.ModuleTestInterface;
 @Implement("module_b")
 public class TestModuleImplement implements ModuleTestInterface {
     private static final String TAG = "TestModuleImplement";

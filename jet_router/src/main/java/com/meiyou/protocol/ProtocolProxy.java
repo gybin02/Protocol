@@ -1,11 +1,11 @@
-package com.meiyou.protocol;
+package com.jet.protocol;
 
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.com.meiyou.protocol.ProtocolBean;
+import com.com.jet.protocol.ProtocolBean;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

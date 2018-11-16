@@ -10,9 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.meiyou.jet.annotation.JFindViewOnClick;
-import com.meiyou.jet.process.Jet;
-import com.meiyou.protocol.ProtocolProxy;
+import com.jet.jet.annotation.JFindViewOnClick;
+import com.jet.jet.process.Jet;
+import com.jet.protocol.ProtocolProxy;
 import com.seeker.tony.myapplication.common.Mock;
 import com.seeker.tony.myapplication.protocol.TestInterface;
 

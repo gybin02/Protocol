@@ -1,6 +1,6 @@
 package com.seeker.tony.myapplication.protocol;
 
-import com.meiyou.annotation.Interface;
+import com.jet.annotation.Interface;
 
 /**
  * @author zhengxiaobin

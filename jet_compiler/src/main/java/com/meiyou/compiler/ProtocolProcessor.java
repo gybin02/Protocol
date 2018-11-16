@@ -1,10 +1,10 @@
-package com.meiyou.compiler;
+package com.jet.compiler;
 
-import com.com.meiyou.protocol.ProtocolBean;
+import com.com.jet.protocol.ProtocolBean;
 import com.google.auto.service.AutoService;
 import com.google.gson.Gson;
-import com.meiyou.annotation.Implement;
-import com.meiyou.annotation.Interface;
+import com.jet.annotation.Implement;
+import com.jet.annotation.Interface;
 
 import java.io.Writer;
 import java.util.ArrayList;

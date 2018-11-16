@@ -1,4 +1,4 @@
-package com.com.meiyou.protocol;
+package com.com.jet.protocol;
 
 /**
  * @author zhengxiaobin

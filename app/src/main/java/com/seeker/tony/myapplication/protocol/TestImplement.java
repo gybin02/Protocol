@@ -2,7 +2,7 @@ package com.seeker.tony.myapplication.protocol;
 
 import android.util.Log;
 
-import com.meiyou.annotation.Implement;
+import com.jet.annotation.Implement;
 
 /**
  * @author zhengxiaobin

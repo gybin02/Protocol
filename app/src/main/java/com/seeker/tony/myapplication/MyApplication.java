@@ -3,7 +3,7 @@ package com.seeker.tony.myapplication;
 import android.app.Application;
 import android.content.Context;
 
-import com.meiyou.protocol.ProtocolProxy;
+import com.jet.protocol.ProtocolProxy;
 
 
 /**

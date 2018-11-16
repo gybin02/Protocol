@@ -1,4 +1,4 @@
-package com.meiyou.protocol;
+package com.jet.protocol;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

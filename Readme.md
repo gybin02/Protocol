@@ -59,7 +59,7 @@ public interface TestInterface {
 在工程build.gradle中配置依赖:
  ```groovy
    //内部版本：0.0.1-SNAPSHOT
-  compile 'com.meiyou.framework:protocol:0.0.1'
+  compile 'com.jet.framework:protocol:0.0.1'
   ```
 调用的地方：
 ```java

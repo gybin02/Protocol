@@ -1,6 +1,6 @@
-package com.meiyou.jet.module_b.protocol;
+package com.jet.jet.module_b.protocol;
 
-import com.meiyou.annotation.Interface;
+import com.jet.annotation.Interface;
 
 /**
  * @author zhengxiaobin
