@@ -70,6 +70,10 @@ public interface TestInterface {
    //使用方只依赖了TestInterface，ProtocolProxy会自动调用合适的类。
                                 
  ```
+ 初始：
+ 在Application里面：初始化：
+         ProtocolProxy.getInstance().init(this);
+
 ### 实现原理
 1. 通过编译期注解,实现收集所有的Interface ->  Implement 对应关系文件：relate.json
 2. 使用Java动态代理 ProxyInvoker 调用
