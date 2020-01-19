@@ -54,5 +54,5 @@ dependencies {
         compile "com.jet.framework:router-compiler:${DEPEND_VERSION}"
     }
 
-    apply from: rootProject.file("mvn.gradle")
+//    apply from: rootProject.file("mvn.gradle")
 }
