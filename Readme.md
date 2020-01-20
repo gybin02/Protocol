@@ -1,3 +1,7 @@
+## 废弃：
+1.今天2020-01-20下载了源码测试了下发下，在Gradle5.0上已经不能使用了
+2.思路可以参考，需要去重新寻找API，暂时废弃
+
 # Jet Protocol 模块间协议框架
 
 业务模块间通常通过定义/实现java的interface完成业务逻辑，必然导致模块间存在代码层面的依赖。也导致编译期的工程依赖。事实上，业务模块间仅仅是逻辑上存在依赖，完全没必要产生实际的工程依赖。
@@ -75,8 +79,25 @@ public interface TestInterface {
          ProtocolProxy.getInstance().init(this);
 
 ### 实现原理
-1. 通过编译期注解,实现收集所有的Interface ->  Implement 对应关系文件：relate.json
-2. 使用Java动态代理 ProxyInvoker 调用
+1. 通过编译期注解Apt,实现收集所有的Interface ->  Implement 对应关系文件：relate.json 
+2. 路由收集，在app的gradle文件里面新增方法，实现吧json文件 拷贝到 Assets/protocol目录下。
+3. 在应用初始化化的时候，调用init()方法，实现把asset/protocol/目录下的json都加载如内存。
+3. 使用Java动态代理 ProxyInvoker 调用生成类，实现路由分发。
+
+### 收集路由gradle脚本：
+```
+//拷贝生成的 assets/目录到打包目录
+android.applicationVariants.all { variant ->
+    def variantName = variant.name
+    def variantNameCapitalized = variantName.capitalize()
+    def copyMetaInf = tasks.create "copyMetaInf$variantNameCapitalized", Copy
+    copyMetaInf.from project.fileTree(javaCompile.destinationDir)
+    copyMetaInf.include "assets/**"
+    copyMetaInf.into "build/intermediates/sourceFolderJavaResources/$variantName"
+    tasks.findByName("transformResourcesWithMergeJavaResFor$variantNameCapitalized").dependsOn copyMetaInf
+}
+```
+原理跟Google auto-server类似。
 
 ### 混淆
 ### 问题：
