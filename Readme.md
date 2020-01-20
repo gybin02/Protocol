@@ -109,6 +109,7 @@ android.applicationVariants.all { variant ->
 - [组件化、模块化、集中式、分布式、服务化、面向服务的架构、微服务架构
 ](http://www.hollischuang.com/archives/1628)
 - [Android组件化和插件化开发](http://dahei.me/2016/06/30/Android%E7%BB%84%E4%BB%B6%E5%8C%96%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8C%96%E5%BC%80%E5%8F%91/)
+- 替代： 可以用：https://github.com/gybin02/fllash
 
 ### TODO
 - 之前可以通过implements interface 比较方便地获得子类方法的签名，现在没有IDE智能提示，写实际的实现类方法的时候，有点不方便。（fixed）
