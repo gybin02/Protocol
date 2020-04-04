@@ -1,4 +1,4 @@
-# Jet Protocol 模块间协议框架
+# Jet Protocol 安卓模块间 通信库
 
 业务模块间通常通过定义/实现java的interface完成业务逻辑，必然导致模块间存在代码层面的依赖。也导致编译期的工程依赖。事实上，业务模块间仅仅是逻辑上存在依赖，完全没必要产生实际的工程依赖。
 
@@ -6,62 +6,47 @@
 
 
 ### 方案对比
- * 定义请求接口，类似于请求服务器的工作方式； 服务端于前端约定好数据格式，双方进行通信
+ * 定义请求接口，类似于请求服务器的工作方式； 服务端于前端约定好数据格式，双方进行通信 - ARouter
  * 使用[Jet](https://github.com/gybin02/Jet) 工程里面的@JImplement 和 @JProvider方法；缺点是：需要指定的实现的类全路径。
  * 定义interface，模块间调用使用接口； (本组件使用方式)
  
 ### 使用：
 
-#### 比如模块A定义接口，提供对外能力：
-```java
-public interface TestInterface {
+1. 在模块Module 的build.gradle中配置依赖:
+ ```groovy
+   //内部版本：0.0.1-SNAPSHOT
+  compile 'com.jet.framework:protocol:0.0.1'
+  ```
 
+2.  初始：
+ 在Application里面：初始化：
+```java 
+  ProtocolProxy.getInstance().init(this);
+```
+
+3. 模块A中创建接口，提供给模块A调用
+```java
+//注意： @Interface 注解里的Value要全局唯一；
+@Interface("moduleB_key")
+public interface TestInterface {
+     //提供的方法
      public void test(String msg);
 }
 ```
-#### 模块B实现接口：
-public class TestImplement implements TestInterface {
-
-    @Override
-    public void test(String msg) {
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-    }
-}
-#### 最终使用方将会：
+4. 模块B中提供接口的实现。提供对外能力
 ```java
-TestImplement stub＝new TestImplement();
-//这种方式必然导致模块B依赖模块A。 代码产生了依赖，耦合。
-```
-#### 本组件的使用方式：
-模块A：
-```java
-//@Interface 注解里的Value要全局唯一；
-@Interface("protocol_key")
-public interface TestInterface {
-
-     public void test(String msg);
-}
-```
-模块B：
-```java
-   @Implement("protocol_key")
+   @Implement("moduleB_key")
    public class TestImplement {
    
        public void test(String msg) {
+          //方法的具体实现
            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
    
        }
    }
    //这里实际上实现了TestInterface的接口方法，要求方法与之签名一致。只是没有使用implements关键字。
  ```
-使用方：
-
-在工程build.gradle中配置依赖:
- ```groovy
-   //内部版本：0.0.1-SNAPSHOT
-  compile 'com.jet.framework:protocol:0.0.1'
-  ```
-调用的地方：
+5. 在模块A中调用：
 ```java
   ProtocolProxy.getInstance().
                         create(TestInterface.class)
@@ -70,9 +55,24 @@ public interface TestInterface {
    //使用方只依赖了TestInterface，ProtocolProxy会自动调用合适的类。
                                 
  ```
- 初始：
- 在Application里面：初始化：
-         ProtocolProxy.getInstance().init(this);
+         
+ #### 常规依赖实现
+ 1. 比如模块A定义接口，提供对外能力：
+```java
+public interface TestInterface {
+
+     public void test(String msg);
+}
+```
+2. 模块B实现接口：
+public class TestImplement implements TestInterface {
+
+    @Override
+    public void test(String msg) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
+}
+3. 这样模块A和模块B 之间就有直接依赖关系
 
 ### 实现原理
 1. 通过编译期注解Apt,实现收集所有的Interface ->  Implement 对应关系文件：relate.json 
