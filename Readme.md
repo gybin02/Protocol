@@ -1,6 +1,4 @@
-## 废弃：
-1.今天2020-01-20下载了源码测试了下发下，在Gradle5.0上已经不能使用了
-2.思路可以参考，需要去重新寻找API，暂时废弃
+
 
 # Jet Protocol 模块间协议框架
 
@@ -84,7 +82,7 @@ public interface TestInterface {
 3. 在应用初始化化的时候，调用init()方法，实现把asset/protocol/目录下的json都加载如内存。
 3. 使用Java动态代理 ProxyInvoker 调用生成类，实现路由分发。
 
-### 收集路由gradle脚本：
+### 收集路由gradle脚本：（已经不能使用 2020-0404）
 ```
 //拷贝生成的 assets/目录到打包目录
 android.applicationVariants.all { variant ->
@@ -99,7 +97,83 @@ android.applicationVariants.all { variant ->
 ```
 原理跟Google auto-server类似。
 
+## 重要提示 2020：
+1.在Gradle 5.0上上面脚本已经不能使用了
+2.思路可以参考，需要去重新寻找API。
+### 使用JavaPoet 把数据放在 中间的类的变量里面
+### 使用Asset/json文件保存
+关键类
+```
+/**
+     * 保存数据到Asset目录下
+     *
+     * @param content
+     */
+    private void createAssetFile(String content) {
+        // app/src/assets
+        FileOutputStream fos = null;
+        OutputStreamWriter writer = null;
+
+        try {
+            //filer.createResource()意思是创建源文件
+            //我们可以指定为class文件输出的地方，
+            //StandardLocation.CLASS_OUTPUT：java文件生成class文件的位置，/app/build/intermediates/javac/debug/classes/目录下
+            //StandardLocation.SOURCE_OUTPUT：java文件的位置，一般在/ppjoke/app/build/generated/source/apt/目录下
+            //StandardLocation.CLASS_PATH 和 StandardLocation.SOURCE_PATH用的不多，指的了这个参数，就要指定生成文件的pkg包名了
+
+            FileObject resource = filer.createResource(StandardLocation.CLASS_OUTPUT, "", FLASH_PATH);
+            String resourcePath = resource.toUri().getPath();
+            //由于我们想要把json文件生成在app/src/main/assets/目录下,所以这里可以对字符串做一个截取，
+            //以此便能准确获取项目在每个电脑上的 /app/src/main/assets/的路径
+            System.out.println(resourcePath);
+            String appPath = resourcePath.substring(0, resourcePath.indexOf("/build/generated"));
+            String module = appPath.substring(appPath.lastIndexOf("/") + 1);
+            String assetsPath = appPath + "/src/main/assets/flash";
+            System.out.println(assetsPath);
+            System.out.println(module);
+
+
+            File file = new File(assetsPath);
+            if (!file.exists()) {
+                file.mkdir();
+            }
+
+            //写入文件
+            File outputFile = new File(file, "flash_" + module);
+            if (outputFile.exists()) {
+                outputFile.delete();
+            }
+            outputFile.createNewFile();
+
+            //利用fastjson把收集到的所有的页面信息 转换成JSON格式的。并输出到文件中
+            fos = new FileOutputStream(outputFile);
+            writer = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+            writer.write(content);
+            writer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+```
+
 ### 混淆
+中间类路径要记得混淆
+
 ### 问题：
 
 ### 参考
