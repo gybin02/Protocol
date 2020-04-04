@@ -65,6 +65,7 @@ public interface TestInterface {
 }
 ```
 2. 模块B实现接口：
+```java
 public class TestImplement implements TestInterface {
 
     @Override
@@ -72,15 +73,16 @@ public class TestImplement implements TestInterface {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 }
+```
 3. 这样模块A和模块B 之间就有直接依赖关系
 
 ### 实现原理
-1. 通过编译期注解Apt,实现收集所有的Interface ->  Implement 对应关系文件：relate.json 
+1. 通过编译期注解APT,实现收集所有的Interface ->  Implement 对应关系文件：relate.json 
 2. 路由收集，在app的gradle文件里面新增方法，实现吧json文件 拷贝到 Assets/protocol目录下。
-3. 在应用初始化化的时候，调用init()方法，实现把asset/protocol/目录下的json都加载如内存。
+3. 在应用初始化化的时候，调用init()方法，实现把asset/protocol/目录下的json都加载到内存。
 3. 使用Java动态代理 ProxyInvoker 调用生成类，实现路由分发。
 
-### 收集路由gradle脚本：（已经不能使用 2020-0404）
+> 具体的收集路由gradle脚本如下：（已经不能使用 2020-0404）
 ```
 //拷贝生成的 assets/目录到打包目录
 android.applicationVariants.all { variant ->
@@ -93,15 +95,15 @@ android.applicationVariants.all { variant ->
     tasks.findByName("transformResourcesWithMergeJavaResFor$variantNameCapitalized").dependsOn copyMetaInf
 }
 ```
-原理跟Google auto-server类似。
+整个原理跟Google auto-server类似。
 
 ## 重要提示 2020.0404
-1. 在Gradle 5.0上上面脚本已经不能使用了
+1. 在Gradle 5.0上面脚本已经不能使用了
 2. 思路可以参考，需要去重新寻找API。
 
 #### 两个其他思路：
 - 使用JavaPoet 把数据放在 中间的类的变量里面
-- 使用Asset/json文件保存
+- 直接生成json文件 放在绝对地址里面Asset/json
 关键类
 ```
 /**
@@ -172,9 +174,8 @@ android.applicationVariants.all { variant ->
 ```
 
 ### 混淆
-中间类路径要记得混淆
-
-### 问题：
+- 中间类 不能混淆
+- 实现类和接口类不能混淆
 
 ### 参考
 - [微信Android模块化架构重构实践](https://mp.weixin.qq.com/s/mkhCzeoLdev5TyO6DqHEdw)
