@@ -1,5 +1,3 @@
-
-
 # Jet Protocol 模块间协议框架
 
 业务模块间通常通过定义/实现java的interface完成业务逻辑，必然导致模块间存在代码层面的依赖。也导致编译期的工程依赖。事实上，业务模块间仅仅是逻辑上存在依赖，完全没必要产生实际的工程依赖。
@@ -97,11 +95,13 @@ android.applicationVariants.all { variant ->
 ```
 原理跟Google auto-server类似。
 
-## 重要提示 2020：
-1.在Gradle 5.0上上面脚本已经不能使用了
-2.思路可以参考，需要去重新寻找API。
-### 使用JavaPoet 把数据放在 中间的类的变量里面
-### 使用Asset/json文件保存
+## 重要提示 2020.0404
+1. 在Gradle 5.0上上面脚本已经不能使用了
+2. 思路可以参考，需要去重新寻找API。
+
+#### 两个其他思路：
+- 使用JavaPoet 把数据放在 中间的类的变量里面
+- 使用Asset/json文件保存
 关键类
 ```
 /**
@@ -189,22 +189,5 @@ android.applicationVariants.all { variant ->
 - 之前可以通过implements interface 比较方便地获得子类方法的签名，现在没有IDE智能提示，写实际的实现类方法的时候，有点不方便。（fixed）
 - 如果出现找不到 Implement 会报 报 空指针， 最好可以处理掉，使用空实现，但是Log 提示
 - 错误提示需要更明显：找不到类啊，方法签名不对等等；
-- Kotlin版本实现
 - 打AAR发布到 JcCenter
-
-### License
-
-Copyright 2017 
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
 
